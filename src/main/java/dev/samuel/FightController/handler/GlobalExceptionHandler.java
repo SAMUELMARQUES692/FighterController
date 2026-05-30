@@ -1,6 +1,7 @@
 package dev.samuel.FightController.handler;
 
 import dev.samuel.FightController.exception.CategoryNotFoundException;
+import dev.samuel.FightController.exception.FighterNotFoundException;
 import dev.samuel.FightController.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleCategoryNotFound(CategoryNotFoundException exception) {
         ErrorResponse error = new ErrorResponse(
                 "CATEGORY_NOT_FOUND",
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(FighterNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCategoryNotFound(FighterNotFoundException exception) {
+        ErrorResponse error = new ErrorResponse(
+                "FIGHTER_NOT_FOUND",
                 exception.getMessage(),
                 LocalDateTime.now()
         );

@@ -3,6 +3,7 @@ package dev.samuel.FightController.service;
 import dev.samuel.FightController.domain.Category;
 import dev.samuel.FightController.domain.Fighter;
 import dev.samuel.FightController.exception.CategoryNotFoundException;
+import dev.samuel.FightController.exception.FighterNotFoundException;
 import dev.samuel.FightController.mapper.FighterMapper;
 import dev.samuel.FightController.repository.CategoryRepository;
 import dev.samuel.FightController.repository.FighterRepository;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -45,6 +47,35 @@ public class FighterService {
                 .map(fighterMapper::toFighterResponse)
                 .toList();
     }
+
+    public FighterResponse findById(UUID id) {
+        return fighterRepository.findById(id)
+                .map(fighterMapper::toFighterResponse)
+                .orElseThrow(() -> new FighterNotFoundException(id));
+    }
+
+    public FighterResponse uptade(FighterRequest request, UUID id) {
+        Fighter fighterExist = fighterRepository.findById(id)
+                .orElseThrow(() -> new FighterNotFoundException(id));
+
+        if (fighterExist != null) {
+            fighterExist.setName(request.name());
+            fighterExist.setHeight(request.height());
+            fighterExist.setBirthDate(request.birthDate());
+            fighterExist.setWeight(request.weight());
+            fighterExist.setFightCompetitions(request.fightCompetitions());
+            fighterExist.setDescription(request.description());
+        }
+        return null;
+        }
+
+
+    public void delete(UUID id) {
+        Fighter fighterExist = fighterRepository.findById(id)
+                .orElseThrow(() -> new FighterNotFoundException(id));
+        fighterRepository.deleteById(id);
+    }
+
 
 
 

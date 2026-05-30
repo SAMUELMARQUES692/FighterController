@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,6 +25,21 @@ public class FighterController {
     @GetMapping
     public ResponseEntity<List<FighterResponse>> findAll() {
         return ResponseEntity.ok(fighterService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FighterResponse> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(fighterService.findById(id));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<FighterResponse> uptade(@RequestBody FighterRequest request, @PathVariable UUID id) {
+        return ResponseEntity.ok(fighterService.uptade(request, id));
+    }
+
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        fighterService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
