@@ -3,6 +3,7 @@ package dev.samuel.FightController.handler;
 import dev.samuel.FightController.exception.CategoryNotFoundException;
 import dev.samuel.FightController.exception.FighterNotFoundException;
 import dev.samuel.FightController.exception.ResourceAlreadyExistException;
+import dev.samuel.FightController.exception.UserOrPasswordIncorectException;
 import dev.samuel.FightController.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
+    @ExceptionHandler(UserOrPasswordIncorectException.class)
+    public ResponseEntity<ErrorResponse> handleClubNotFound(UserOrPasswordIncorectException exception) {
+        ErrorResponse error = new ErrorResponse(
+                "BAD_CREDENTIAL",
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
     // Fallback para erros inesperados
     @ExceptionHandler(Exception.class)
