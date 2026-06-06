@@ -19,6 +19,8 @@ target/
 *.iml
 *.ipr
 .env
+authz.pub
+authz.pem
 
 ### NetBeans ###
 /nbproject/private/
