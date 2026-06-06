@@ -1,0 +1,42 @@
+package dev.samuel.FightController.mapper;
+
+
+import dev.samuel.FightController.domain.Scope;
+import dev.samuel.FightController.domain.User;
+import dev.samuel.FightController.request.UserRequest;
+import dev.samuel.FightController.response.UserResponse;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+
+    @Mapping(target = "scopes", source = "scopes", qualifiedByName = "mapScopeIdsToScopeEntities")
+    User toEntity(UserRequest request);
+
+    @Mapping(target = "scopes", source = "scopes", qualifiedByName = "mapScopeEntitiesToStringScopes")
+    UserResponse toUserResponse(User user);
+
+    @Named("mapScopeIdsToScopeEntities")
+    default List<Scope> mapScopeIdsToScopeEntities(List<Long> scopeIds) {
+        if (scopeIds == null) return List.of();
+
+        return scopeIds.stream()
+                .map(id -> Scope.builder().id(id).build())
+                .toList();
+    }
+
+    @Named("mapScopeEntitiesToStringScopes")
+    default List<String> mapScopeEntitiesToStringScopes(List<Scope> scopes) {
+        if (scopes == null) return List.of();
+
+        return scopes.stream()
+                .map(Scope::getName)
+                .toList();
+    }
+
+
+}
