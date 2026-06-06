@@ -2,6 +2,7 @@ package dev.samuel.FightController.handler;
 
 import dev.samuel.FightController.exception.CategoryNotFoundException;
 import dev.samuel.FightController.exception.FighterNotFoundException;
+import dev.samuel.FightController.exception.ResourceAlreadyExistException;
 import dev.samuel.FightController.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,16 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistException.class)
+    public ResponseEntity<ErrorResponse> handleEmailIsUse(ResourceAlreadyExistException exception) {
+        ErrorResponse error = new ErrorResponse(
+                "EMAIL_ERROR",
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
 

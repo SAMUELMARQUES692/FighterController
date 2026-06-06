@@ -13,7 +13,7 @@ public record UserRequest(
         String name,
 
         @NotBlank
-        String email,
+        String username,
 
         @NotBlank
         String password,

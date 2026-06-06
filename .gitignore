@@ -21,6 +21,7 @@ target/
 .env
 authz.pub
 authz.pem
+V4__insert_users_scopes.sql
 
 ### NetBeans ###
 /nbproject/private/
