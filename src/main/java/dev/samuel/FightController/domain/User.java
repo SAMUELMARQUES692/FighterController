@@ -2,12 +2,14 @@ package dev.samuel.FightController.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Entity
 @Table(name = "users")
 @AllArgsConstructor
@@ -34,7 +36,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "scope_id")
     )
-    List<Scope> scopes = new ArrayList<>();
+   private List<Scope> scopes = new ArrayList<>();
 
 
 }
