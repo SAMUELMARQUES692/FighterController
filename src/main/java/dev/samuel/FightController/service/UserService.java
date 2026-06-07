@@ -10,6 +10,7 @@ import dev.samuel.FightController.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class UserService {
     private final ScopeService scopeService;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public UserResponse create(UserRequest userRequest) {
 
         if (userRepository.existsByUsername(userRequest.username())) {
@@ -36,6 +38,41 @@ public class UserService {
         newUser.setScopes(scopes);
         newUser.setPassword(passwordEncoder.encode(userRequest.password()));
         User saveUser = userRepository.save(newUser);
+        return userMapper.toUserResponse(saveUser);
+    }
+
+    public List<UserResponse> findAll() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toUserResponse)
+                .toList();
+    }
+
+    public UserResponse findById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return userMapper.toUserResponse(user);
+    }
+
+    public void delete(Long id) {
+        userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        userRepository.deleteById(id);
+    }
+
+    @Transactional
+    public UserResponse update(UserRequest request, Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        User updateUser = userMapper.toEntity(request);
+
+        updateUser.setId(user.getId());
+        updateUser.setPassword(passwordEncoder.encode(request.password()));
+        updateUser.setScopes(request.scopes().stream()
+                .map(scopeService::findById)
+                .toList());
+
+        User saveUser = userRepository.save(updateUser);
         return userMapper.toUserResponse(saveUser);
     }
 
