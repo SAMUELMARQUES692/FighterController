@@ -3,11 +3,13 @@ package dev.samuel.FightController.service;
 import dev.samuel.FightController.domain.Scope;
 import dev.samuel.FightController.domain.User;
 import dev.samuel.FightController.exception.ResourceAlreadyExistException;
+import dev.samuel.FightController.exception.UserNotFoundException;
 import dev.samuel.FightController.mapper.UserMapper;
 import dev.samuel.FightController.repository.UserRepository;
 import dev.samuel.FightController.request.UserRequest;
 import dev.samuel.FightController.response.UserResponse;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.service.UnknownServiceException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,20 +51,20 @@ public class UserService {
 
     public UserResponse findById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new UserNotFoundException(id));
         return userMapper.toUserResponse(user);
     }
 
     public void delete(Long id) {
         userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new UserNotFoundException(id));
         userRepository.deleteById(id);
     }
 
     @Transactional
     public UserResponse update(UserRequest request, Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         User updateUser = userMapper.toEntity(request);
 
